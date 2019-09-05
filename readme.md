@@ -4,20 +4,20 @@
 
 > A few DOS tips when writing batch files
 
-* [Using ANSI Colors in echo](#using-ansi-colors-in-echo)
-* [Variables](#variables)
-  * [Get the function name](#get-the-function-name)
-  * [Remove double-quotes](#remove-double-quotes)
-* [Functions](#functions)
-  * [A few theory](#a-few-theory)
-    * [Return a boolean or an integer](#return-a-boolean-or-an-integer)
-    * [Access the variables inside the function](#access-the-variables-inside-the-function)
-  * [Some helpers](#some-helpers)
-    * [getAbsolutePath](#getabsolutepath)
-    * [getBaseNameWithExtension](#getbasenamewithextension)
-    * [getBaseNameWithoutExtension](#getbasenamewithoutextension)
-    * [getFolderName](#getfoldername)
-* [License](#license)
+- [Using ANSI Colors in echo](#using-ansi-colors-in-echo)
+- [Variables](#variables)
+  - [Get the function name](#get-the-function-name)
+  - [Remove double-quotes](#remove-double-quotes)
+- [Functions](#functions)
+  - [A few theory](#a-few-theory)
+    - [Return a boolean or an integer](#return-a-boolean-or-an-integer)
+    - [Access the variables inside the function](#access-the-variables-inside-the-function)
+  - [Some helpers](#some-helpers)
+    - [getAbsolutePath](#getabsolutepath)
+    - [getBaseNameWithExtension](#getbasenamewithextension)
+    - [getBaseNameWithoutExtension](#getbasenamewithoutextension)
+    - [getFolderName](#getfoldername)
+- [License](#license)
 
 ## Using ANSI Colors in echo
 
@@ -25,7 +25,7 @@
 
 You can combine colors like `[30m[43m` where `30`is the font-color (black) and `43` the background-color (yellow).
 
-```bash
+```txt
 @echo off
 cls
 echo.
@@ -66,8 +66,10 @@ This is useful for, f.i., debugging purpose (saying which function is responsibl
 ```bash
 call :showhelp :show
 exit/b
+
 :showhelp
 echo You are in function %~0
+goto:eof
 ```
 
 ### Remove double-quotes
@@ -83,9 +85,13 @@ The solution is to use `%THE_VARIABLE:"=%` i.e. the name of the variable followe
 cls
 
 SET INPUT=%1
+
+REM %INPUT% will contains quote so "C:\Program Files\Windows Photo Viewer\readme.txt"
 echo Not filtered: %INPUT%
 
 SET FILTERED=%INPUT:"=%
+
+REM %FILTERED% is without the quote so C:\Program Files\Windows Photo Viewer\readme.txt
 echo Filtered    : %FILTERED%
 ```
 
@@ -108,7 +114,7 @@ if  %errorlevel% == 0 (
 )
 
 ::--------------------------------------------------------
-::-- checkParams - Make sure this script is called with the 
+::-- checkParams - Make sure this script is called with the
 ::      required parameters. In case of errors, the help is
 ::      displayed and the script will be ended
 ::  return 0 when success, -1 otherwise
@@ -144,13 +150,14 @@ For instance (partial example; not executable as is)
 ```bash
 @echo off
 REM Call doIit with two parameters, we can imagine that the first
-REM parameter can be any extension and the second is an action 
+REM parameter can be any extension and the second is an action
 REM like open/copy/print/...
 CALL :doIt "PDF" "OPEN"
 EXIT/B
 
 :doIt
 ECHO Generate %~1 files and, when done, %~2 them
+goto:eof
 ```
 
 ### Some helpers
@@ -178,7 +185,7 @@ GOTO END:
 ::--------------------------------------------------------
 :getAbsolutePath
 SET AbsolutePath=%~dpfn1
-
+goto:eof
 
 :END
 ```
@@ -206,7 +213,7 @@ GOTO END:
 ::--------------------------------------------------------
 :getBaseNameWithExtension
 SET BaseNameWithExtension=%~nx1
-
+goto:eof
 
 :END
 ```
@@ -234,7 +241,7 @@ GOTO END:
 ::--------------------------------------------------------
 :getBaseNameWithoutExtension
 SET BaseNameWithoutExtension=%~n1
-
+goto:eof
 
 :END
 ```
@@ -250,7 +257,7 @@ cls
 CALL :getFolderName C:\Folder\SubFolder\test.txt
 
 REM Display C:\Folder\SubFolder\
-echo %FolderName%  
+echo %FolderName%
 
 GOTO END:
 
@@ -262,7 +269,7 @@ GOTO END:
 ::--------------------------------------------------------
 :getFolderName
 SET FolderName=%~dp1
-
+goto:eof
 
 :END
 ```
