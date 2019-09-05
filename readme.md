@@ -4,20 +4,22 @@
 
 > A few DOS tips when writing batch files
 
-- [Using ANSI Colors in echo](#using-ansi-colors-in-echo)
-- [Variables](#variables)
-  - [Get the function name](#get-the-function-name)
-  - [Remove double-quotes](#remove-double-quotes)
-- [Functions](#functions)
-  - [A few theory](#a-few-theory)
-    - [Return a boolean or an integer](#return-a-boolean-or-an-integer)
-    - [Access the variables inside the function](#access-the-variables-inside-the-function)
-  - [Some helpers](#some-helpers)
-    - [getAbsolutePath](#getabsolutepath)
-    - [getBaseNameWithExtension](#getbasenamewithextension)
-    - [getBaseNameWithoutExtension](#getbasenamewithoutextension)
-    - [getFolderName](#getfoldername)
-- [License](#license)
+* [Using ANSI Colors in echo](#using-ansi-colors-in-echo)
+* [Variables](#variables)
+* [Get the function name](#get-the-function-name)
+* [Remove double-quotes](#remove-double-quotes)
+* [Functions](#functions)
+* [A few theory](#a-few-theory)
+    * [Return a boolean or an integer](#return-a-boolean-or-an-integer)
+    * [Access the variables inside the function](#access-the-variables-inside-the-function)
+* [Some piece of code](#some-piece-of-code)
+    * [Ask for user input](#ask-for-user-input)
+* [Some functions](#some-functions)
+    * [getAbsolutePath](#getabsolutepath)
+    * [getBaseNameWithExtension](#getbasenamewithextension)
+    * [getBaseNameWithoutExtension](#getbasenamewithoutextension)
+    * [getFolderName](#getfoldername)
+* [License](#license)
 
 ## Using ANSI Colors in echo
 
@@ -52,12 +54,17 @@ See also [https://gist.github.com/mlocati/fdabcaeb8071d5c75a2d51712db24011](http
 
 ## Variables
 
-| Variable | Description                                                                                                                                                      |
-| -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `%~dp0`  | Return the parent folder name of the running script (return `c:\temp\` when the executed script is `c:\temp\a.cmd`). This is different to the current directory. |
-| `%~dfp0` | Return the full name of the running script (return f.i. `c:\temp\a.cmd`).                                                                                        |
-| `%cd%`   | Return the current directory.                                                                                                                                    |
-| `%~0`    | In a function, display the name of the function; [see example below](#get-the-function-name).                                                                    |
+| Variable       | Description                                                                                                                                                                                                       |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `%~0`          | In a function, display the name of the function; [see example below](#get-the-function-name).                                                                                                                     |
+| `%~dfp0`       | Return the full name of the running script (return f.i. `c:\temp\a.cmd`).                                                                                                                                         |
+| `%~dp0`        | Return the parent folder name of the running script (return `c:\temp\` when the executed script is `c:\temp\a.cmd`). This is different to the current directory.                                                  |
+| `%cd%`         | Return the current directory.                                                                                                                                                                                     |
+| `%CMDCMDLINE%` | Allow to determine if the script has been fired from a DOS prompt (`"C:\WINDOWS\system32\cmd.exe"`) or with a double-click from f.i. the file explorer (`C:\WINDOWS\system32\cmd.exe /c ""C:\temp\script.bat" "`) |
+| `%DATE%`       | The system date                                                                                                                                                                                                   |
+| `%ERRORLEVEL%` | The error level returned by the last executed command, or by the last called batch script.                                                                                                                        |
+| `%RANDOM%`     | A generated pseudo-random number between 0 and 32767.                                                                                                                                                             |
+| `%TIME%`       | The system time in HH:MM:SS.mm format.                                                                                                                                                                            |
 
 ### Get the function name
 
@@ -160,7 +167,26 @@ ECHO Generate %~1 files and, when done, %~2 them
 goto:eof
 ```
 
-### Some helpers
+### Some piece of code
+
+#### Ask for user input
+
+`choice` allow to prompt user input. When the choice is a list of options (yes/no or like below 1/2/3/0), the selected option index can be retrieved by reading the `%ERRORLEVEL%` variable.
+
+```bash
+@ECHO OFF
+
+CHOICE /C 1230 /M "Appuyez sur 1 pour ... ou 2 pour ... ou sur 3 pour ... ou 0 pour abandonner"
+
+IF "%ERRORLEVEL%"=="1" SET REPONSE=Option 1 choisie
+IF "%ERRORLEVEL%"=="2" SET REPONSE=Option 2 choisie
+IF "%ERRORLEVEL%"=="3" SET REPONSE=Option 3 choisie
+IF "%ERRORLEVEL%"=="4" SET REPONSE=Option 4 Abandon
+
+ECHO Votre choix : %REPONSE%
+```
+
+### Some functions
 
 #### getAbsolutePath
 
