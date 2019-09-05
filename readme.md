@@ -186,6 +186,67 @@ IF "%ERRORLEVEL%"=="4" SET REPONSE=Option 4 Abandon
 ECHO Votre choix : %REPONSE%
 ```
 
+#### Get the number of arguments
+
+Count the number of arguments passed to the script.
+
+*This code can't be put in a function since, then, we need to pass arguments to the function and we don't know how many arguments are there.*
+
+```bash
+set argcount=0
+for %%i in (%*) do set /a argcount+=1
+echo The number of arguments is %argcount%
+```
+
+
+#### Loop
+
+> See [https://en.wikibooks.org/wiki/Windows_Batch_Scripting#FOR](https://en.wikibooks.org/wiki/Windows_Batch_Scripting#FOR) for much more way to make a loop
+
+Simple loop, from 1 till 5
+
+```bash
+@echo off
+cls
+for %%i in (1,2,3,4,5) do (
+    echo %%i
+)
+```
+
+Loop from 1 till 20, only odd numbers
+
+```bash
+@echo off
+cls
+for /l %%i in (1,2,20) do (
+    echo %%i
+)
+```
+
+#### Get the list of files, process one by one
+
+Get the list of files in the current folder (in the example) and process files one by one.
+
+```bash
+@echo off
+cls
+for %%f in (*.*) do (
+    echo %%f
+)
+```
+
+#### Read a file line by line
+
+With the `for /f` construct like below, we can process a file line by line, like below:
+
+```bash
+@echo off
+cls
+for /f "tokens=*" %%l in (readme.md) do (
+    echo %%l
+)
+```
+
 ### Some functions
 
 #### getAbsolutePath
@@ -267,6 +328,98 @@ GOTO END:
 ::--------------------------------------------------------
 :getBaseNameWithoutExtension
 SET BaseNameWithoutExtension=%~n1
+goto:eof
+
+:END
+```
+
+#### getFileExtension
+
+Return the file's extension.
+
+Note: when the file has multiple extensions like .xlsx.bak, only the last extension is returned.
+
+```bash
+@echo off
+cls
+
+CALL :getFileExtension C:\file.xlsx
+
+REM Display xlsx
+echo File extension is "%FileExtension%"
+
+GOTO END:
+
+::--------------------------------------------------------
+::-- getFileExtension - Get the file's extension
+::--    %1 A filename
+::--
+::-- Return "xlsx" when %1 is "C:\file.xlsx"
+::--------------------------------------------------------
+:getFileExtension
+SET FileExtension=%~x1
+goto:eof
+
+:END
+```
+
+#### getFileNameFromPATH
+
+Get the full name of a file that is stored in one of the folder mentioned in the `%PATH%`.
+
+If the file can't be found in the `%PATH%`, return an empty string.
+
+```bash
+@echo off
+cls
+
+CALL :getFileNameFromPATH notepad++.exe
+
+REM If Notepad++.exe is in the PATH, return the full name
+REM of the file f.i. C:\Program Files\Notepad++\notepad++.exe
+echo File name is %FileNameFromPATH%
+
+GOTO END:
+
+::--------------------------------------------------------
+::-- getFileNameFromPATH - Get the full name of a file 
+::--    that is present in the PATH. Return the first occurrence
+::--    If the file isn't found, returns an empty string
+::--
+::--    %1 A filename
+::--
+::-- Return a number, the size in bytes
+::--------------------------------------------------------
+:getFileNameFromPATH
+SET FileNameFromPATH=%~$PATH:1
+goto:eof
+
+:END
+```
+
+#### getFileSize
+
+Get the file size in bytes.
+
+```bash
+@echo off
+cls
+
+CALL :getFileSize C:\Temp\test.bat
+
+REM Display the filesize
+echo File size is %FileSize%
+
+GOTO END:
+
+::--------------------------------------------------------
+::-- getFileSize - Get the file size in bytes
+::--    %1 A filename
+::--
+::-- Return a number, the size in bytes
+::--------------------------------------------------------
+:getFileSize
+SET FileSize=%~z1
 goto:eof
 
 :END
