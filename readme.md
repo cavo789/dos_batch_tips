@@ -6,19 +6,21 @@
 
 * [Using ANSI Colors in echo](#using-ansi-colors-in-echo)
 * [Variables](#variables)
-* [Get the function name](#get-the-function-name)
-* [Remove double-quotes](#remove-double-quotes)
+  * [Get the function name](#get-the-function-name)
+  * [Remove double-quotes](#remove-double-quotes)
+* [Snippets](#snippets)
+  * [Retrieve the full path of a program in your path](#retrieve-the-full-path-of-a-program-in-your-path)
 * [Functions](#functions)
-* [A few theory](#a-few-theory)
+  * [A few theory](#a-few-theory)
     * [Return a boolean or an integer](#return-a-boolean-or-an-integer)
     * [Access the variables inside the function](#access-the-variables-inside-the-function)
-* [Some piece of code](#some-piece-of-code)
+  * [Some piece of code](#some-piece-of-code)
     * [Ask for user input](#ask-for-user-input)
     * [Get the number of arguments](#get-the-number-of-arguments)
     * [Loop](#loop)
     * [Get the list of files, process one by one](#get-the-list-of-files-process-one-by-one)
     * [Read a file line by line](#read-a-file-line-by-line)
-* [Some functions](#some-functions)
+  * [Some functions](#some-functions)
     * [getAbsolutePath](#getabsolutepath)
     * [getBaseNameWithExtension](#getbasenamewithextension)
     * [getBaseNameWithoutExtension](#getbasenamewithoutextension)
@@ -107,6 +109,42 @@ SET FILTERED=%INPUT:"=%
 
 REM %FILTERED% is without the quote so C:\Program Files\Windows Photo Viewer\readme.txt
 echo Filtered    : %FILTERED%
+```
+
+
+
+## Snippets
+
+### Retrieve the full path of a program in your path
+
+Let's take an example: your batch will run an external program and redirect the output to a text file so, just before leaving the batch, you can open the file with [Notepad++](https://notepad-plus-plus.org/) but ... how can you make your code generic and open notepad.exe if notepad++ isn't installed?
+
+Here is the solution:
+
+First make sure that the folder where Notepad++ is well mentioned in your system environment variables (i.e. in `PATH`).
+Then, in your code, add these last three lines. The `FOR /F ...` line is quite strange but allow to run the `where notepad++.exe` command and redirect the output into the `notepad` variable. When 
+
+```batch
+SET outputFile = %tmp%\test.log
+
+REM Any statements... the objective here is just to create a log file
+dir *.* > %outputFile%
+
+IF EXIST %outputFile% (
+
+    SET notepad=notepad.exe
+
+    WHERE notepad++.exe /Q
+
+    IF %errorlevel%==0 (
+        FOR /F "tokens=*" %%g IN ('where notepad++.exe') do (
+            SET notepad=%%g
+        )
+    )
+
+    REM Start notepad++.exe is present otherwise start notepad.exe
+    START %notepad% %outputFile%
+)
 ```
 
 ## Functions
