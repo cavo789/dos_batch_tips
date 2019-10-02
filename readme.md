@@ -142,7 +142,7 @@ IF EXIST %outputFile% (
 
     WHERE notepad++.exe /Q
 
-    IF %errorlevel%==0 (
+    IF !errorlevel!==0 (
         FOR /F "tokens=*" %%g IN ('where notepad++.exe') do (
             SET notepad=%%g
         )
