@@ -28,6 +28,7 @@
     * [getFileNameFromPATH](#getfilenamefrompath)
     * [getFileSize](#getfilesize)
     * [getFolderName](#getfoldername)
+  * [getSymLinkTargetPath](#getsymlinktargetpath)
 * [License](#license)
 
 ## Using ANSI Colors in echo
@@ -501,6 +502,67 @@ GOTO END:
 ::--------------------------------------------------------
 :getFolderName
 SET FolderName=%~dp1
+goto:eof
+
+:END
+```
+
+### getSymLinkTargetPath
+
+Consider the following situation:
+
+* You've a generic script called `C:\Folder\my_script.cmd`
+* You've create a symbolic link `C:\Folder\SubFolder\test.cmd` to that file (called the `target path`).
+
+By running `C:\Folder\SubFolder\test.cmd` and displaying the script fullname (`echo %~dfp0`), you'll obtain `C:\Folder\SubFolder\test.cmd` which is the symbolic link.
+How can you retrieve the target file? The following function will return that info.
+
+```bash
+@echo off
+cls
+
+REM %~dfp0 is the current script filename and thus C:\Folder\SubFolder\test.cmd
+CALL :getSymLinkTargetPath %~dfp0
+
+REM Display C:\Folder\my_script.cmd
+echo %SymLinkTargetPath%
+
+GOTO END:
+
+::--------------------------------------------------------
+::-- getSymLinkTargetPath - When a file is a symlink, return the 
+::--    target path i.e. the original path of the file
+::--
+::--    %1 A filename that is a symlink to another file
+::--
+::-- Return "C:\Christophe\...\generate.cmd" f.i. when %1 is 
+::-- is a symbolic link to that file, no matter where the file is located 
+::--
+::-- @see https://stackoverflow.com/a/55481996
+::--------------------------------------------------------
+:getSymLinkTargetPath
+
+REM IMPORTANT!!! THE TWO EMPTY LINES SHOULD REMAINS THERE!!!
+SET br=^
+
+
+SET "pafIf=%1"
+SET "gIfZsymLink="
+FOR /f "tokens=*" %%q in ('dir "!pafIf!" /al /b') do (
+    FOR /f "tokens=2 delims=[]" %%r in ('dir /al ^| findstr /i /c:"%%q"') do (
+        SET "gIfZsymLink=!gIfZsymLink!%%~fq>%%r!br!"
+    )
+)
+SET "gIfZsymLink=!gIfZsymLink:~0,-1!"
+
+SET TargetPath=
+FOR /f "tokens=1,2 delims=>" %%q in ("!gIfZsymLink!") do (
+    REM The file %1 is a symlink; get the target path and store it
+    SET TargetPath=%%r
+)
+
+SET SymLinkTargetPath=%TargetPath%
+
 goto:eof
 
 :END
