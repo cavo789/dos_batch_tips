@@ -28,7 +28,8 @@
     * [getFileNameFromPATH](#getfilenamefrompath)
     * [getFileSize](#getfilesize)
     * [getFolderName](#getfoldername)
-  * [getSymLinkTargetPath](#getsymlinktargetpath)
+    * [getParentFolderName](#getparentfoldername)
+    * [getSymLinkTargetPath](#getsymlinktargetpath)
 * [License](#license)
 
 ## Using ANSI Colors in echo
@@ -507,7 +508,36 @@ goto:eof
 :END
 ```
 
-### getSymLinkTargetPath
+#### getParentFolderName
+
+Return the parent folder of a folder
+
+```bash
+@echo off
+cls
+
+CALL :getParentFolderName C:\Folder\SubFolder\
+
+REM Display C:\Folder\
+echo %ParentFolderName%
+
+GOTO END:
+
+::--------------------------------------------------------
+::-- getParentFolderName - Get the parent foldername of a folder
+::--    %1 A foldername
+::--
+::-- Return "C:\Folder\" when %1 is "C:\Folder\SubFolder\"
+::--------------------------------------------------------
+:getParentFolderName
+SET Folder=%1
+FOR %%a IN ("%Folder:~0,-1%") DO SET ParentFolderName=%%~dpa
+goto:eof
+
+END:
+```
+
+#### getSymLinkTargetPath
 
 Consider the following situation:
 
