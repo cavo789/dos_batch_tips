@@ -559,41 +559,51 @@ echo %SymLinkTargetPath%
 
 GOTO END:
 
+
 ::--------------------------------------------------------
-::-- getSymLinkTargetPath - When a file is a symlink, return the 
+::-- getSymLinkTargetPath - When a file is a symlink, return the
 ::--    target path i.e. the original path of the file
 ::--
 ::--    %1 A filename that is a symlink to another file
 ::--
-::-- Return "C:\Christophe\...\generate.cmd" f.i. when %1 is 
-::-- is a symbolic link to that file, no matter where the file is located 
-::--
-::-- @see https://stackoverflow.com/a/55481996
+::-- Return "C:\Christophe\...\generate.cmd" f.i. when %1 is
+::-- is a symbolic link to that file, no matter where the file is located
 ::--------------------------------------------------------
 :getSymLinkTargetPath
 
-REM IMPORTANT!!! THE TWO EMPTY LINES SHOULD REMAINS THERE!!!
-SET br=^
+SET FILE=%1
+SET TargetPath=""
+SET fileDirInfo=""
 
+IF EXIST %tmp%\symlinks.tmp (
+    DEL %tmp%\symlinks.tmp
+)
 
-SET "pafIf=%1"
-SET "gIfZsymLink="
-FOR /f "tokens=*" %%q in ('dir "!pafIf!" /al /b') do (
-    FOR /f "tokens=2 delims=[]" %%r in ('dir /al ^| findstr /i /c:"%%q"') do (
-        SET "gIfZsymLink=!gIfZsymLink!%%~fq>%%r!br!"
+REM When using "DIR filename", we get something like below when
+REM the file is a symlink.
+REM 16-10-19  13:18    <SYMLINK>      phan.bat [C:\Christophe\phan.bat]
+REM
+REM Using the findstr pipe will allow us to check if the file is a
+REM symlink
+REM Output that line in the .tmp file so we can read the file after
+REM and process the string as a DOS string variable
+dir %FILE% | findstr "<SYMLINK>" > %tmp%\symlinks.tmp
+
+IF EXIST %tmp%\symlinks.tmp (
+    SET /p fileDirInfo=<%tmp%\symlinks.tmp
+
+    REM Here, fileDirInfo, contains the following:
+    REM 16-10-19  13:18    <SYMLINK>      phan.bat [C:\Christophe\phan.bat]
+    REM Extract here the portion between brackets => we'll extract part2
+    for /f "useback tokens=1,2,3 delims=[]" %%a in ('!fileDirInfo!') do (
+        set "TargetPath=%%b"
     )
 )
-SET "gIfZsymLink=!gIfZsymLink:~0,-1!"
 
-SET TargetPath=
-FOR /f "tokens=1,2 delims=>" %%q in ("!gIfZsymLink!") do (
-    REM The file %1 is a symlink; get the target path and store it
-    SET TargetPath=%%r
-)
-
+REM Done, we've our original file (C:\Christophe\phan.bat)
 SET SymLinkTargetPath=%TargetPath%
 
-goto:eof
+GOTO:EOF
 
 :END
 ```
