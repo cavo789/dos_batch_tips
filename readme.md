@@ -21,6 +21,7 @@
     * [Get the list of files, process one by one](#get-the-list-of-files-process-one-by-one)
     * [Read a file line by line](#read-a-file-line-by-line)
   * [Some functions](#some-functions)
+    * [FileCompare](#filecompare)
     * [getAbsolutePath](#getabsolutepath)
     * [getBaseNameWithExtension](#getbasenamewithextension)
     * [getBaseNameWithoutExtension](#getbasenamewithoutextension)
@@ -38,27 +39,27 @@
 
 You can combine colors like `[30m[43m` where `30`is the font-color (black) and `43` the background-color (yellow).
 
-```txt
-@echo off
+```batch
+@ECHO off
 cls
-echo.
-echo [30m[43mSomething written in BLACK (with a YELLOW background for visibilty)[0m
-echo [31mSomething written in RED[0m
-echo [32mSomething written in GREEN[0m
-echo [33mSomething written in YELLOW[0m
-echo [34mSomething written in BLUE[0m
-echo [35mSomething written in PURPLE[0m
-echo [36mSomething written in CYAN[0m
-echo [37mSomething written in WHITE[0m
-echo.
-echo [40mSomething with a BLACK background[0m
-echo [41mSomething with a RED background[0m
-echo [42mSomething with a GREEN background[0m
-echo [43mSomething with a YELLOW background[0m
-echo [44mSomething with a BLUE background[0m
-echo [45mSomething with a PURPLE background[0m
-echo [46mSomething with a CYAN background[0m
-echo [47m[31mSomething with a WHITE background (written in RED for visibility)[0m
+ECHO.
+ECHO [30m[43mSomething written in BLACK (with a YELLOW background for visibilty)[0m
+ECHO [31mSomething written in RED[0m
+ECHO [32mSomething written in GREEN[0m
+ECHO [33mSomething written in YELLOW[0m
+ECHO [34mSomething written in BLUE[0m
+ECHO [35mSomething written in PURPLE[0m
+ECHO [36mSomething written in CYAN[0m
+ECHO [37mSomething written in WHITE[0m
+ECHO.
+ECHO [40mSomething with a BLACK background[0m
+ECHO [41mSomething with a RED background[0m
+ECHO [42mSomething with a GREEN background[0m
+ECHO [43mSomething with a YELLOW background[0m
+ECHO [44mSomething with a BLUE background[0m
+ECHO [45mSomething with a PURPLE background[0m
+ECHO [46mSomething with a CYAN background[0m
+ECHO [47m[31mSomething with a WHITE background (written in RED for visibility)[0m
 ```
 
 See also [https://gist.github.com/mlocati/fdabcaeb8071d5c75a2d51712db24011](https://gist.github.com/mlocati/fdabcaeb8071d5c75a2d51712db24011) for a few more like bold, underline, ...
@@ -80,15 +81,15 @@ See also [https://gist.github.com/mlocati/fdabcaeb8071d5c75a2d51712db24011](http
 
 ### Get the function name
 
-This is useful for, f.i., debugging purpose (saying which function is responsible for which action/echo);
+This is useful for, f.i., debugging purpose (saying which function is responsible for which action/ECHO);
 
-```bash
+```batch
 call :showhelp :show
 exit/b
 
 :showhelp
-echo You are in function %~0
-goto:eof
+    ECHO You are in function %~0
+    GOTO:EOF
 ```
 
 ### Remove double-quotes
@@ -99,22 +100,20 @@ The parameter needs double-quotes here since the full name contains spaces.
 
 The solution is to use `%THE_VARIABLE:"=%` i.e. the name of the variable followed by a `:`, the character to trim `"` and ended by `=`.
 
-```bash
-@echo off
+```batch
+@ECHO off
 cls
 
 SET INPUT=%1
 
 REM %INPUT% will contains quote so "C:\Program Files\Windows Photo Viewer\readme.txt"
-echo Not filtered: %INPUT%
+ECHO Not filtered: %INPUT%
 
 SET FILTERED=%INPUT:"=%
 
 REM %FILTERED% is without the quote so C:\Program Files\Windows Photo Viewer\readme.txt
-echo Filtered    : %FILTERED%
+ECHO Filtered    : %FILTERED%
 ```
-
-
 
 ## Snippets
 
@@ -168,12 +167,12 @@ For this purpose, just use the `%errorlevel%` internal value.
 
 Below an example, idea is to validate a list of mandatory parameters. If the check is successful, return 0, if anything goes wrong, return -1 (or any code in fact).
 
-```bash
+```batch
 REM Check parameters and make sure mandatory parameters have been set
 call :checkParams %1 %2 %3
 
 if  %errorlevel% == 0 (
-    echo "Great, parameters have been set"
+    ECHO "Great, parameters have been set"
 )
 
 ::--------------------------------------------------------
@@ -184,24 +183,24 @@ if  %errorlevel% == 0 (
 ::--------------------------------------------------------
 :checkParams
 
-SET bContinue=0
+    SET bContinue=0
 
-IF "%1"=="" (
-    echo "Please specify a value for all required parameters."
-    SET bContinue=-1
-) ELSE (
-    IF "%2"=="" (
-        echo "You have mention only the first parameter. Please also do this for the second and third one."
+    IF "%1"=="" (
+        ECHO "Please specify a value for all required parameters."
         SET bContinue=-1
     ) ELSE (
-        IF "%3"=="" (
-            echo "You forget to set the third parameter."
+        IF "%2"=="" (
+            ECHO "You have mention only the first parameter. Please also do this for the second and third one."
             SET bContinue=-1
+        ) ELSE (
+            IF "%3"=="" (
+                ECHO "You forget to set the third parameter."
+                SET bContinue=-1
+            )
         )
     )
-)
 
-exit /b %bContinue%
+    exit /b %bContinue%
 ```
 
 #### Access the variables inside the function
@@ -210,8 +209,8 @@ A function parameter is retrieved by using the `%~` syntax; followed by a number
 
 For instance (partial example; not executable as is)
 
-```bash
-@echo off
+```batch
+@ECHO off
 REM Call doIit with two parameters, we can imagine that the first
 REM parameter can be any extension and the second is an action
 REM like open/copy/print/...
@@ -219,8 +218,8 @@ CALL :doIt "PDF" "OPEN"
 EXIT/B
 
 :doIt
-ECHO Generate %~1 files and, when done, %~2 them
-goto:eof
+    ECHO Generate %~1 files and, when done, %~2 them
+    GOTO:EOF
 ```
 
 ### Some piece of code
@@ -229,7 +228,7 @@ goto:eof
 
 `choice` allow to prompt user input. When the choice is a list of options (yes/no or like below 1/2/3/0), the selected option index can be retrieved by reading the `%ERRORLEVEL%` variable.
 
-```bash
+```batch
 @ECHO OFF
 
 CHOICE /C 1230 /M "Appuyez sur 1 pour ... ou 2 pour ... ou sur 3 pour ... ou 0 pour abandonner"
@@ -248,12 +247,11 @@ Count the number of arguments passed to the script.
 
 *This code can't be put in a function since, then, we need to pass arguments to the function and we don't know how many arguments are there.*
 
-```bash
+```batch
 set argcount=0
 for %%i in (%*) do set /a argcount+=1
-echo The number of arguments is %argcount%
+ECHO The number of arguments is %argcount%
 ```
-
 
 #### Loop
 
@@ -261,21 +259,21 @@ echo The number of arguments is %argcount%
 
 Simple loop, from 1 till 5
 
-```bash
-@echo off
+```batch
+@ECHO off
 cls
 for %%i in (1,2,3,4,5) do (
-    echo %%i
+    ECHO %%i
 )
 ```
 
 Loop from 1 till 20, only odd numbers
 
-```bash
-@echo off
+```batch
+@ECHO off
 cls
 for /l %%i in (1,2,20) do (
-    echo %%i
+    ECHO %%i
 )
 ```
 
@@ -283,11 +281,11 @@ for /l %%i in (1,2,20) do (
 
 Get the list of files in the current folder (in the example) and process files one by one.
 
-```bash
-@echo off
+```batch
+@ECHO off
 cls
 for %%f in (*.*) do (
-    echo %%f
+    ECHO %%f
 )
 ```
 
@@ -295,28 +293,68 @@ for %%f in (*.*) do (
 
 With the `for /f` construct like below, we can process a file line by line, like below:
 
-```bash
-@echo off
+```batch
+@ECHO off
 cls
 for /f "tokens=*" %%l in (readme.md) do (
-    echo %%l
+    ECHO %%l
 )
 ```
 
 ### Some functions
 
+#### FileCompare
+
+Compare two files, return `0` when files are identical, `1` when there is at least one difference.
+
+```batch
+@ECHO off
+cls
+
+call :fnFileCompare "git_check_status.cmd" "c:\master\git_check_status.cmd"
+ECHO %FileCompare%%
+
+GOTO END:
+
+::--------------------------------------------------------
+::-- fnFileCompare: Compare two files
+::      %1 = Full name of the first file
+::           f.i. "C:\Christophe\Repository\push_wiki.cmd"
+::      %2 = Full name of the second file
+::           f.i. "C:\Christophe\Repository\master\push_wiki.cmd"
+::
+:: Return 0 when files are identical; 1 when there is a difference
+::--------------------------------------------------------
+:fnFileCompare
+
+    SET current=%1
+    SET master=%2
+
+    REM /C - case insensitive
+    REM /L - compare as ASCII text
+    REM /W - compress whitespace and tabs for comparison
+    fc /C /L /W %current% %master% >nul
+
+    REM Capture the return. 0 = files are identical
+    SET FileCompare=%errorlevel%
+
+    GOTO:EOF
+
+:END
+```
+
 #### getAbsolutePath
 
 Get the absolute path from a relative file.
 
-```bash
-@echo off
+```batch
+@ECHO off
 cls
 
 CALL :getAbsolutePath %~dp0..\..\..\..\..\..\autoexec.bat
 
 REM Display C:\autoexec.bat
-echo %AbsolutePath%
+ECHO %AbsolutePath%
 
 GOTO END:
 
@@ -327,8 +365,8 @@ GOTO END:
 ::-- Return "C:\Temp\test.cmd" when %1 is "C:\Folder\..\Temp\test.cmd"
 ::--------------------------------------------------------
 :getAbsolutePath
-SET AbsolutePath=%~dpfn1
-goto:eof
+    SET AbsolutePath=%~dpfn1
+    GOTO:EOF
 
 :END
 ```
@@ -337,14 +375,14 @@ goto:eof
 
 Remove any folder in a variable filename and return only the filename (with extension).
 
-```bash
-@echo off
+```batch
+@ECHO off
 cls
 
 CALL :getBaseNameWithExtension C:\Folder\SubFolder\test.txt
 
 REM Display test.txt
-echo Basename with extension is "%BaseNameWithExtension%"
+ECHO Basename with extension is "%BaseNameWithExtension%"
 
 GOTO END:
 
@@ -355,8 +393,8 @@ GOTO END:
 ::-- Return "test.txt" when %1 is "C:\Folder\SubFolder\test.txt"
 ::--------------------------------------------------------
 :getBaseNameWithExtension
-SET BaseNameWithExtension=%~nx1
-goto:eof
+    SET BaseNameWithExtension=%~nx1
+    GOTO:EOF
 
 :END
 ```
@@ -365,14 +403,14 @@ goto:eof
 
 Remove any folder in a variable filename and return only the filename but without the extension.
 
-```bash
-@echo off
+```batch
+@ECHO off
 cls
 
 CALL :getBaseNameWithoutExtension C:\Folder\SubFolder\test.txt
 
 REM Display test
-echo Basename without extension is "%BaseNameWithoutExtension%"
+ECHO Basename without extension is "%BaseNameWithoutExtension%"
 
 GOTO END:
 
@@ -383,8 +421,8 @@ GOTO END:
 ::-- Return "test" when %1 is "C:\Folder\SubFolder\test.txt"
 ::--------------------------------------------------------
 :getBaseNameWithoutExtension
-SET BaseNameWithoutExtension=%~n1
-goto:eof
+    SET BaseNameWithoutExtension=%~n1
+    GOTO:EOF
 
 :END
 ```
@@ -395,14 +433,14 @@ Return the file's extension.
 
 Note: when the file has multiple extensions like .xlsx.bak, only the last extension is returned.
 
-```bash
-@echo off
+```batch
+@ECHO off
 cls
 
 CALL :getFileExtension C:\file.xlsx
 
 REM Display xlsx
-echo File extension is "%FileExtension%"
+ECHO File extension is "%FileExtension%"
 
 GOTO END:
 
@@ -413,8 +451,8 @@ GOTO END:
 ::-- Return "xlsx" when %1 is "C:\file.xlsx"
 ::--------------------------------------------------------
 :getFileExtension
-SET FileExtension=%~x1
-goto:eof
+    SET FileExtension=%~x1
+    GOTO:EOF
 
 :END
 ```
@@ -425,15 +463,15 @@ Get the full name of a file that is stored in one of the folder mentioned in the
 
 If the file can't be found in the `%PATH%`, return an empty string.
 
-```bash
-@echo off
+```batch
+@ECHO off
 cls
 
 CALL :getFileNameFromPATH notepad++.exe
 
 REM If Notepad++.exe is in the PATH, return the full name
 REM of the file f.i. C:\Program Files\Notepad++\notepad++.exe
-echo File name is %FileNameFromPATH%
+ECHO File name is %FileNameFromPATH%
 
 GOTO END:
 
@@ -447,8 +485,8 @@ GOTO END:
 ::-- Return a number, the size in bytes
 ::--------------------------------------------------------
 :getFileNameFromPATH
-SET FileNameFromPATH=%~$PATH:1
-goto:eof
+    SET FileNameFromPATH=%~$PATH:1
+    GOTO:EOF
 
 :END
 ```
@@ -457,14 +495,14 @@ goto:eof
 
 Get the file size in bytes.
 
-```bash
-@echo off
+```batch
+@ECHO off
 cls
 
 CALL :getFileSize C:\Temp\test.bat
 
 REM Display the filesize
-echo File size is %FileSize%
+ECHO File size is %FileSize%
 
 GOTO END:
 
@@ -475,8 +513,8 @@ GOTO END:
 ::-- Return a number, the size in bytes
 ::--------------------------------------------------------
 :getFileSize
-SET FileSize=%~z1
-goto:eof
+    SET FileSize=%~z1
+    GOTO:EOF
 
 :END
 ```
@@ -485,14 +523,14 @@ goto:eof
 
 Return the folder of a file / sub-folder
 
-```bash
-@echo off
+```batch
+@ECHO off
 cls
 
 CALL :getFolderName C:\Folder\SubFolder\test.txt
 
 REM Display C:\Folder\SubFolder\
-echo %FolderName%
+ECHO %FolderName%
 
 GOTO END:
 
@@ -503,8 +541,8 @@ GOTO END:
 ::-- Return "C:\Folder\SubFolder" when %1 is "C:\Folder\SubFolder\test.txt"
 ::--------------------------------------------------------
 :getFolderName
-SET FolderName=%~dp1
-goto:eof
+    SET FolderName=%~dp1
+    GOTO:EOF
 
 :END
 ```
@@ -513,14 +551,14 @@ goto:eof
 
 Return the parent folder of a folder
 
-```bash
-@echo off
+```batch
+@ECHO off
 cls
 
 CALL :getParentFolderName C:\Folder\SubFolder\
 
 REM Display C:\Folder\
-echo %ParentFolderName%
+ECHO %ParentFolderName%
 
 GOTO END:
 
@@ -531,9 +569,9 @@ GOTO END:
 ::-- Return "C:\Folder\" when %1 is "C:\Folder\SubFolder\"
 ::--------------------------------------------------------
 :getParentFolderName
-SET Folder=%1
-FOR %%a IN ("%Folder:~0,-1%") DO SET ParentFolderName=%%~dpa
-goto:eof
+    SET Folder=%1
+    FOR %%a IN ("%Folder:~0,-1%") DO SET ParentFolderName=%%~dpa
+    GOTO:EOF
 
 END:
 ```
@@ -545,21 +583,20 @@ Consider the following situation:
 * You've a generic script called `C:\Folder\my_script.cmd`
 * You've create a symbolic link `C:\Folder\SubFolder\test.cmd` to that file (called the `target path`).
 
-By running `C:\Folder\SubFolder\test.cmd` and displaying the script fullname (`echo %~dfp0`), you'll obtain `C:\Folder\SubFolder\test.cmd` which is the symbolic link.
+By running `C:\Folder\SubFolder\test.cmd` and displaying the script fullname (`ECHO %~dfp0`), you'll obtain `C:\Folder\SubFolder\test.cmd` which is the symbolic link.
 How can you retrieve the target file? The following function will return that info.
 
-```bash
-@echo off
+```batch
+@ECHO off
 cls
 
 REM %~dfp0 is the current script filename and thus C:\Folder\SubFolder\test.cmd
 CALL :getSymLinkTargetPath %~dfp0
 
 REM Display C:\Folder\my_script.cmd
-echo %SymLinkTargetPath%
+ECHO %SymLinkTargetPath%
 
 GOTO END:
-
 
 ::--------------------------------------------------------
 ::-- getSymLinkTargetPath - When a file is a symlink, return the
@@ -572,39 +609,39 @@ GOTO END:
 ::--------------------------------------------------------
 :getSymLinkTargetPath
 
-SET FILE=%1
-SET TargetPath=""
-SET fileDirInfo=""
+    SET FILE=%1
+    SET TargetPath=""
+    SET fileDirInfo=""
 
-IF EXIST %tmp%\symlinks.tmp (
-    DEL %tmp%\symlinks.tmp
-)
-
-REM When using "DIR filename", we get something like below when
-REM the file is a symlink.
-REM 16-10-19  13:18    <SYMLINK>      phan.bat [C:\Christophe\phan.bat]
-REM
-REM Using the findstr pipe will allow us to check if the file is a
-REM symlink
-REM Output that line in the .tmp file so we can read the file after
-REM and process the string as a DOS string variable
-dir %FILE% | findstr "<SYMLINK>" > %tmp%\symlinks.tmp
-
-IF EXIST %tmp%\symlinks.tmp (
-    SET /p fileDirInfo=<%tmp%\symlinks.tmp
-
-    REM Here, fileDirInfo, contains the following:
-    REM 16-10-19  13:18    <SYMLINK>      phan.bat [C:\Christophe\phan.bat]
-    REM Extract here the portion between brackets => we'll extract part2
-    for /f "useback tokens=1,2,3 delims=[]" %%a in ('!fileDirInfo!') do (
-        set "TargetPath=%%b"
+    IF EXIST %tmp%\symlinks.tmp (
+        DEL %tmp%\symlinks.tmp
     )
-)
 
-REM Done, we've our original file (C:\Christophe\phan.bat)
-SET SymLinkTargetPath=%TargetPath%
+    REM When using "DIR filename", we get something like below when
+    REM the file is a symlink.
+    REM 16-10-19  13:18    <SYMLINK>      phan.bat [C:\Christophe\phan.bat]
+    REM
+    REM Using the findstr pipe will allow us to check if the file is a
+    REM symlink
+    REM Output that line in the .tmp file so we can read the file after
+    REM and process the string as a DOS string variable
+    dir %FILE% | findstr "<SYMLINK>" > %tmp%\symlinks.tmp
 
-GOTO:EOF
+    IF EXIST %tmp%\symlinks.tmp (
+        SET /p fileDirInfo=<%tmp%\symlinks.tmp
+
+        REM Here, fileDirInfo, contains the following:
+        REM 16-10-19  13:18    <SYMLINK>      phan.bat [C:\Christophe\phan.bat]
+        REM Extract here the portion between brackets => we'll extract part2
+        for /f "useback tokens=1,2,3 delims=[]" %%a in ('!fileDirInfo!') do (
+            set "TargetPath=%%b"
+        )
+    )
+
+    REM Done, we've our original file (C:\Christophe\phan.bat)
+    SET SymLinkTargetPath=%TargetPath%
+
+    GOTO:EOF
 
 :END
 ```
