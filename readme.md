@@ -32,6 +32,7 @@
     * [getFolderName](#getfoldername)
     * [getParentFolderName](#getparentfoldername)
     * [getSymLinkTargetPath](#getsymlinktargetpath)
+    * [isAdmin](#isadmin)
 * [License](#license)
 
 ## Using ANSI Colors in echo
@@ -355,7 +356,6 @@ Create a symbolic link only if the file doesn't exists yet or is different.
 The example below will use the file `c:\master\git_check_status.cmd` as the master one.
 
 If the file `git_check_status.cmd` didn't exists yet in the current folder or if the content of that file is different, the file will be (re) created: a symbolic link will be made to the master one.
-
 
 ```batch
 @ECHO off
@@ -737,6 +737,40 @@ GOTO END:
 :END
 ```
 
+#### isAdmin
+
+Detect if the script has been executed from a DOS Prompt fired under admin privileges.
+
+```batch
+call :fnIsAdminMode
+
+IF %isAdmin% EQU "0" (
+    END "Please start this script with admin privileges"
+    GOTO END
+)
+
+REM ... Ok, the script can continue
+
+GOTO END
+
+::--------------------------------------------------------
+::-- fnIsAdminMode: Detect if the CMD prompt has been started
+::      with "Run as admin" or not
+:: Return "1" when admin mode set; "0" otherwise
+::--------------------------------------------------------
+:fnIsAdminMode
+
+    SET isAdmin="0"
+
+    openfiles >nul 2>&1
+
+    REM If not equal to 0, command prompt not run under admin privileges
+    IF %ERRORLEVEL% EQU 0 SET isAdmin="1"
+
+    GOTO:EOF
+
+END:
+```
 ## License
 
 [MIT](LICENSE)
