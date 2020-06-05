@@ -1,0 +1,11 @@
+Variable;Description
+`%~0`;In a function, display the name of the function; [see example below](#get-the-function-name)
+`%~dfp0`;Return the full name of the running script (return f.i. `c:\temp\a.cmd`)
+`%~n0%~x0`;Return the base name of the running script (return f.i. `a.cmd`)
+`%~dp0`;Return the parent folder name of the running script (return `c:\temp\` when the executed script is `c:\temp\a.cmd`). This is different to the current directory.
+`%cd%`;Return the current directory
+`%CMDCMDLINE%`;Allow to determine if the script has been fired from a DOS prompt (`"C:\WINDOWS\system32\cmd.exe"`) or with a double-click from f.i. the file explorer (`C:\WINDOWS\system32\cmd.exe /c ""C:\temp\script.bat" "`)
+`%DATE%`;The system date
+`%ERRORLEVEL%`;The error level returned by the last executed command, or by the last called batch script
+`%RANDOM%`;A generated pseudo-random number between 0 and 32767
+`%TIME%`;The system time in HH:MM:SS.mm format
