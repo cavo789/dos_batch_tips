@@ -2,7 +2,7 @@
 <!-- Don't modify this file manually (you'll loose your changes) -->
 <!-- but run the tool once more -->
 
-<!-- Last refresh date: 2020-06-05 12:11:47 -->
+<!-- Last refresh date: 2020-09-22 12:03:12 -->
 
 <!-- below, content of ./index.md -->
 
@@ -23,6 +23,7 @@
   * [Get the number of arguments](#get-the-number-of-arguments)
   * [Ask for user input](#ask-for-user-input)
   * [Get the list of files, process one by one](#get-the-list-of-files-process-one-by-one)
+  * [Get the prefix](#get-the-prefix)
   * [Loop](#loop)
   * [Read a file line by line](#read-a-file-line-by-line)
   * [Get the suffix](#get-the-suffix)
@@ -184,6 +185,25 @@ Get the list of files in the current folder (in the example) and process files o
 cls
 for %%f in (*.*) do (
     ECHO %%f
+)
+```
+
+<!-- below, content of ./030-code-snippets/left/readme.md -->
+
+### Get the prefix
+
+How to extract the xxx first characters of a string.
+
+Imagine a directory structure where each your coding projects are stored in their own folder and you're using a `php_` prefix to sort projects based on the most used language:
+
+```bash
+@echo off
+
+SET folder=C:\Folder\php_MyProject
+SET PREFIX=%folder:~0,4%%
+
+IF %PREFIX% EQU "php_" (
+    ECHO "That folder is a PHP project"
 )
 ```
 
