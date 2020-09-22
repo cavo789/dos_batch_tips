@@ -1,4 +1,4 @@
-# Get the prefix
+# Get the prefix (LEFT)
 
 How to extract the xxx first characters of a string.
 

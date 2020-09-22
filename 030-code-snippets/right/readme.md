@@ -1,4 +1,4 @@
-# Get the suffix
+# Get the suffix (RIGHT)
 
 How to extract the xxx last characters of a string.
 
