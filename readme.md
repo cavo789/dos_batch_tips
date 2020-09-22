@@ -2,7 +2,7 @@
 <!-- Don't modify this file manually (you'll loose your changes) -->
 <!-- but run the tool once more -->
 
-<!-- Last refresh date: 2020-09-22 12:03:12 -->
+<!-- Last refresh date: 2020-09-22 12:07:07 -->
 
 <!-- below, content of ./index.md -->
 
@@ -10,9 +10,7 @@
 
 <!-- markdownlint-disable MD046 -->
 
-![Banner](./images/banner.png)
-
-> A few DOS tips when writing batch files
+![Banner](./banner.svg)
 
 <!-- table-of-contents - start -->
 * [Using ANSI Colors in echo](#using-ansi-colors-in-echo)
@@ -23,10 +21,10 @@
   * [Get the number of arguments](#get-the-number-of-arguments)
   * [Ask for user input](#ask-for-user-input)
   * [Get the list of files, process one by one](#get-the-list-of-files-process-one-by-one)
-  * [Get the prefix](#get-the-prefix)
+  * [Get the prefix (LEFT)](#get-the-prefix-left)
   * [Loop](#loop)
   * [Read a file line by line](#read-a-file-line-by-line)
-  * [Get the suffix](#get-the-suffix)
+  * [Get the suffix (RIGHT)](#get-the-suffix-right)
   * [Retrieve the full path of a program in your path](#retrieve-the-full-path-of-a-program-in-your-path)
 * [Functions](#functions)
   * [A few theory](#a-few-theory)
@@ -190,7 +188,7 @@ for %%f in (*.*) do (
 
 <!-- below, content of ./030-code-snippets/left/readme.md -->
 
-### Get the prefix
+### Get the prefix (LEFT)
 
 How to extract the xxx first characters of a string.
 
@@ -249,7 +247,7 @@ for /f "tokens=*" %%l in (readme.md) do (
 
 <!-- below, content of ./030-code-snippets/right/readme.md -->
 
-### Get the suffix
+### Get the suffix (RIGHT)
 
 How to extract the xxx last characters of a string.
 
