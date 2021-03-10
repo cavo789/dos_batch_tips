@@ -2,7 +2,7 @@
 <!-- Don't modify this file manually (you'll loose your changes) -->
 <!-- but run the tool once more -->
 
-<!-- Last refresh date: 2020-09-22 12:07:07 -->
+<!-- Last refresh date: 2021-03-10 08:24:14 -->
 
 <!-- below, content of ./index.md -->
 
@@ -20,6 +20,7 @@
 * [Code snippets](#code-snippets)
   * [Get the number of arguments](#get-the-number-of-arguments)
   * [Ask for user input](#ask-for-user-input)
+  * [Detect if started from Windows](#detect-if-started-from-windows)
   * [Get the list of files, process one by one](#get-the-list-of-files-process-one-by-one)
   * [Get the prefix (LEFT)](#get-the-prefix-left)
   * [Loop](#loop)
@@ -170,6 +171,32 @@ IF "%ERRORLEVEL%"=="3" SET ANSWER=You've choosen for 3
 IF "%ERRORLEVEL%"=="4" SET ANSWER=You've choosen to cancel
 
 ECHO Your choice: %ANSWER%
+```
+
+<!-- below, content of ./030-code-snippets/detect-if-started-from-windows/readme.md -->
+
+### Detect if started from Windows
+
+When you DOS script makes some echos like showing an error message, if the user has double-click on the script through f.i. Windows Explorer, he'll not be able to see the message: the DOS window is closed automatically at the end of the execution.
+
+The snippet below will add a `pause` to the script in that situation.
+
+Just add this code at the end of your batch.
+
+```batch
+REM Try to detect if the script was started by double-clicking on it from, f.i., Windows explorer.
+REM This is the case when the intern variable %cmdcmdline% contains the "/c" parameter.
+REM Note: %cmdcmdline% is empty if the script has been fired from DOS otherwise, looks like this:
+REM C:\WINDOWS\system32\cmd.exe /c ""C:\...\docker-up.bat" "
+REM When "/c" is found, ERRORLEVEL is set to 0 so, it's Windows.
+REM https://stackoverflow.com/a/12036163/1065340
+
+echo %cmdcmdline% | find /i "/c" >nul 2>&1
+
+if %errorlevel% EQU 0 (
+    echo.
+    pause
+)
 ```
 
 <!-- below, content of ./030-code-snippets/get_list_of_files/readme.md -->
